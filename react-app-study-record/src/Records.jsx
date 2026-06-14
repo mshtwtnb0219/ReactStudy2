@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllRecords } from "./utils/supabaseFunction";
 
 export const Records = () => {
   // 記録
@@ -20,6 +21,17 @@ export const Records = () => {
   const onChangeContent = (e) => setStudyContent(e.target.value);
   // 学習時間の取得
   const onChangeTime = (e) => setStudyTime(e.target.value);
+
+  // supabaseからの値取得
+  useEffect(() => {
+    const getRecords = async () => {
+      const records = await getAllRecords();
+      setRecords(records.data);
+      console.log(records.data)
+    };
+
+    getRecords();
+  }, []);
 
   // 学習時間の登録
   const onClickRecord = () => {
