@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllRecords } from "./utils/supabaseFunction";
+import { getAllRecords, insertRecords } from "./utils/supabaseFunction";
 
 export const Records = () => {
   // 記録
@@ -22,30 +22,44 @@ export const Records = () => {
   // 学習時間の取得
   const onChangeTime = (e) => setStudyTime(e.target.value);
 
+  // データ読み込み時の制御フラグ
+  const [loading, setLoading] = useState(true);
+
   // supabaseからの値取得
-  useEffect(() => {
-    const getRecords = async () => {
+  const getRecords = async () => {
+    try {
+      setLoading(true);
+
       const records = await getAllRecords();
       setRecords(records.data);
-      console.log(records.data)
-    };
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // 依存配列なし
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getRecords();
   }, []);
 
   // 学習時間の登録
-  const onClickRecord = () => {
-    if (studyContent === "" || !studyTime > 0) {
+  const onClickRecord = async () => {
+    console.log(studyTime)
+    if (studyContent === "" || Number(studyTime) <= 0) {
       setError("入力されていない項目があります。");
       return;
     }
     const record = {
-      id: crypto.randomUUID(),
       title: studyContent,
       time: studyTime,
     };
 
-    setRecords([...records, record]);
+    // supabaseの登録
+    await insertRecords(record.title, record.time);
+    await getRecords();
     setError("");
   };
   return (
@@ -71,14 +85,18 @@ export const Records = () => {
         </form>
       </div>
       <p disabled={disable}>{error}</p>
+      {loading ? (
+        <h3>Loading....</h3>
+      ) : (
+        <ul>
+          {records.map((record) => (
+            <li key={record.id}>
+              {record.title} {record.time}時間
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <ul>
-        {records.map((record) => (
-          <li key={record.id}>
-            {record.title} {record.time}時間
-          </li>
-        ))}
-      </ul>
       <button onClick={onClickRecord}>登録</button>
       <p>合計時間：{totalTime}/1000(h)</p>
     </>
