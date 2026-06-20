@@ -3,11 +3,11 @@ name: ReactApp FirebaseDeploy
 # ワークフローの実行条件(トリガー)
 on: 
 # ：手動実行
-  workflow_dispatch:
+  # workflow_dispatch:
 # git push時
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
 
 # ジョブ定義
 jobs:
@@ -29,6 +29,9 @@ jobs:
         run: npm ci
       - name: Build
         # working-directory: react-app-study-record
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
       - name: Create Service Account File
         run: |
