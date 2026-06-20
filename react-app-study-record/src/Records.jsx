@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getAllRecords, insertRecords } from "./utils/supabaseFunction";
+import {
+  deleteRecord,
+  getAllRecords,
+  insertRecord,
+} from "./utils/supabaseFunction";
 
 export const Records = () => {
   // 記録
@@ -45,9 +49,9 @@ export const Records = () => {
     getRecords();
   }, []);
 
-  // 学習時間の登録
+  // supabaseの登録
   const onClickRecord = async () => {
-    console.log(studyTime)
+    console.log(studyTime);
     if (studyContent === "" || Number(studyTime) <= 0) {
       setError("入力されていない項目があります。");
       return;
@@ -58,9 +62,16 @@ export const Records = () => {
     };
 
     // supabaseの登録
-    await insertRecords(record.title, record.time);
+    await insertRecord(record.title, record.time);
     await getRecords();
     setError("");
+  };
+
+  // supabase 値削除
+  const onClickDelete = async (index) => {
+    console.log(index);
+    await deleteRecord(index);
+    await getRecords();
   };
   return (
     <>
@@ -92,6 +103,7 @@ export const Records = () => {
           {records.map((record) => (
             <li key={record.id}>
               {record.title} {record.time}時間
+              <button onClick={() => onClickDelete(record.id)}>削除</button>
             </li>
           ))}
         </ul>
