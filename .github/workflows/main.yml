@@ -23,8 +23,8 @@ jobs:
       - name: Setup Node.js
         uses: mshtwtnb0219/ReactStudy2
         with:
-          node-version:"24"
-      # 一旦、コメントアウト 
+          node-version: 24
+      # コメントアウト 
       # - name: Install Packages
       #   run: npm ci
       - name: Build
