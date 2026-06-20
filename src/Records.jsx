@@ -75,7 +75,7 @@ export const Records = () => {
   };
   return (
     <>
-      <h1>学習記録一覧</h1>
+      <h1>学習記録一覧(｀･ω･´)</h1>
       <div>
         <form>
           <p>
