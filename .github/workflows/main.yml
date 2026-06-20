@@ -25,16 +25,16 @@ jobs:
         with:
           node-version: 24
       - name: Install Packages
-        working-directory: react-app-study-record
+        # working-directory: react-app-study-record
         run: npm ci
       - name: Build
-        working-directory: react-app-study-record
+        # working-directory: react-app-study-record
         run: npm run build
       - name: Create Service Account File
         run: |
           echo "${{ secrets.FIREBASE_KEY }}" | base64 -d > service-account.json
       - name: Firebase Deploy
-        working-directory: react-app-study-record
+        # working-directory: react-app-study-record
         env:
           GOOGLE_APPLICATION_CREDENTIALS: service-account.json
         run: |
